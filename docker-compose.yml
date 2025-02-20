@@ -1,0 +1,57 @@
+version: "3"
+services:
+  # nodejs:
+  #   image: node:14
+  #   volumes:
+  #     - .:/backend
+  #   working_dir: /backend
+  #   command: npm run start
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - NODE_ENV=production
+  # mysql:
+  #   image: mysql:8.0
+  #   ports:
+  #     - "3307:3306"
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: ""
+  #     MYSQL_DATABASE: db_formation
+  #     MYSQL_USER: root
+  #     MYSQL_PASSWORD: ""
+  #   volumes:
+  #     - db-data:/var/lib/mysql
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.9
+    environment:
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=duong1234
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.9
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+      KIBANA_PASSWORD: duong1234
+    depends_on:
+      - elasticsearch
+  # logstash:
+  #   image: docker.elastic.co/logstash/logstash:7.17.9
+  #   volumes:
+  #     - ./config/logstash/:/usr/share/logstash/pipeline/
+  #   environment:
+  #     - "ES_JAVA_OPTS=-Xmx256m -Xms256m"
+  #     - "LS_JAVA_OPTS=-Xmx256m -Xms256m"
+  #   depends_on:
+  #     - elasticsearch
+  #   ports:
+  #     - "9600:9600"
+volumes:
+  db-data:
+  es-data:
